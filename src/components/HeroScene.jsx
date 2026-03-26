@@ -6,19 +6,19 @@ function ComputerStack() {
     <group>
       <mesh position={[0, 0.2, 0]} castShadow>
         <boxGeometry args={[1.8, 1, 0.08]} />
-        <meshStandardMaterial color="#0e5a8a" metalness={0.2} roughness={0.4} />
+        <meshStandardMaterial color="#1b238f" metalness={0.2} roughness={0.35} />
       </mesh>
       <mesh position={[0, -0.45, 0.15]} castShadow>
         <boxGeometry args={[2, 0.15, 0.8]} />
-        <meshStandardMaterial color="#f27b21" />
+        <meshStandardMaterial color="#f4b400" />
       </mesh>
       <mesh position={[0.9, -0.5, 0.35]} castShadow>
         <capsuleGeometry args={[0.12, 0.4, 8, 16]} />
-        <meshStandardMaterial color="#08324c" />
+        <meshStandardMaterial color="#04703e" />
       </mesh>
       <mesh position={[-1.1, -0.25, 0.2]} castShadow>
         <sphereGeometry args={[0.18, 24, 24]} />
-        <meshStandardMaterial color="#2a9d8f" />
+        <meshStandardMaterial color="#11a9e2" />
       </mesh>
     </group>
   )
