@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
 const TEAM_DATA = [
-  { id: 1, name: 'FEUKOUO TALLA Justin', role: 'Fondateur & Directeur Général', image: '👨‍💼', bio: 'Visionnaire à la tête de Pro-Informatique depuis sa fondation, il orchestre la stratégie et l\'excellence du service.' },
+  { id: 1, name: 'FEUKOUO TALLA Justin', role: 'Fondateur & Directeur Général', image: '👨‍💼', bio: "Visionnaire à la tête de Pro-Informatique depuis sa fondation, il orchestre la stratégie et l'excellence du service." },
   { id: 2, name: 'Marie Kamga', role: 'Responsable Technique', image: '👩‍💻', bio: 'Experte en infrastructure IT et support client, elle garantit la fiabilité de nos solutions techniques au quotidien.' },
   { id: 3, name: 'Pierre Nkengue', role: 'Directeur Artistique', image: '🧑‍🎨', bio: 'Créatif et passionné, il donne vie aux identités visuelles de nos clients avec talent et précision.' },
   { id: 4, name: 'Sophie Tchinda', role: 'Ingénieure Réseau', image: '👩‍💻', bio: 'Spécialiste des infrastructures réseau, elle déploie des solutions connectées performantes pour les entreprises.' },

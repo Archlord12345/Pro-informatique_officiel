@@ -1220,10 +1220,9 @@ img { display: block; max-width: 100%; }
   font-size: 2rem;
   margin: 0 auto 1rem;
   border: 2px solid rgba(17,169,226,0.3);
-  /* Override orbital positioning */
-  position: static !important;
-  transform: none !important;
-  animation: none !important;
+  position: static;
+  transform: none;
+  animation: none;
 }
 .team-name {
   font-size: 1.05rem;
