@@ -29,10 +29,10 @@ export function ChatPage() {
   }
 
   return (
-    <section className="chat-wrap">
-      <article className="glass-card reveal-up">
+    <section className="chat-v2">
+      <article className="chat-main reveal-up section-a">
         <p className="eyebrow">Assistant IA</p>
-        <h2>Chatbot limite au contexte Pro-Informatique</h2>
+        <h2 className="page-title">Chatbot limite au contexte Pro-Informatique</h2>
         <p>
           Le bot repond uniquement aux questions en lien avec les services, le lieu, l'equipe et
           les activites de Pro-Informatique.
@@ -60,9 +60,9 @@ export function ChatPage() {
         ) : null}
       </article>
 
-      <article className="glass-card reveal-up delay-1">
+      <article className="chat-side reveal-up section-b">
         <p className="eyebrow">Bots externes</p>
-        <h2>Canaux WhatsApp & Telegram</h2>
+        <h2 className="page-title">Canaux WhatsApp & Telegram</h2>
         <p>
           Intgre ton numero WhatsApp et ton bot Telegram dans le fichier .env pour connecter ces
           canaux de messagerie.
@@ -72,6 +72,10 @@ export function ChatPage() {
           <li>Telegram bot: {import.meta.env.VITE_TELEGRAM_BOT || 'Non configure'}</li>
           <li>Telegram chat ID: {import.meta.env.VITE_TELEGRAM_CHAT_ID || 'Non configure'}</li>
         </ul>
+
+        <a href="/services" className="inline-link">
+          Voir nos offres avant de contacter
+        </a>
       </article>
     </section>
   )

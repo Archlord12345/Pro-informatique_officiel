@@ -2,20 +2,41 @@ import { services } from '../data/company'
 
 export function ServicesPage() {
   return (
-    <section>
-      <div className="section-head reveal-up">
+    <section className="services-v2">
+      <div className="section-head reveal-up section-a services-intro">
         <p className="eyebrow">Nos services</p>
-        <h2>Tout le necessaire informatique au meme endroit</h2>
+        <h2 className="page-title">Tout le necessaire informatique au meme endroit</h2>
+        <p>
+          Du besoin ponctuel a la prestation complete, Pro-Informatique livre des solutions rapides,
+          fiables et adaptees aux particuliers comme aux professionnels.
+        </p>
       </div>
 
       <div className="services-grid">
         {services.map((service, index) => (
-          <article key={service.id} className={`service-card reveal-up delay-${(index % 3) + 1}`}>
-            <h3>{service.title}</h3>
+          <article
+            key={service.id}
+            className={`service-card reveal-up section-${String.fromCharCode(98 + (index % 4))}`}
+          >
+            <p className="service-index">0{index + 1}</p>
+            <h3 className="service-title">{service.title}</h3>
             <p>{service.details}</p>
+            <a href="/chat" className="service-link">
+              Demander un accompagnement
+            </a>
           </article>
         ))}
       </div>
+
+      <article className="cta-band reveal-up section-d">
+        <p>
+          Besoin d'une intervention ou d'un devis rapide ? Lance la discussion depuis l'assistant IA
+          ou passe directement a l'atelier.
+        </p>
+        <a className="action-link action-link-primary" href="/chat">
+          Ouvrir l'assistant
+        </a>
+      </article>
     </section>
   )
 }

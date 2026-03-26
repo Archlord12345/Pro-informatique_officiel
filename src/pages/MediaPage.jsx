@@ -63,16 +63,19 @@ export function MediaPage() {
   }
 
   if (loading) {
-    return <p>Chargement des medias...</p>
+    return <p className="loading-text">Chargement des medias...</p>
   }
 
   return (
-    <section className="media-layout">
-      <div className="media-list">
-        <div className="section-head">
-          <p className="eyebrow">Galerie</p>
-          <h2>Publications media</h2>
-        </div>
+    <section className="media-v2">
+      <div className="section-head reveal-up section-a">
+        <p className="eyebrow">Galerie</p>
+        <h2 className="page-title">Realisations et publications</h2>
+        <p>Parcours visuel des travaux recents, activites et retours de la communaute.</p>
+      </div>
+
+      <div className="media-list reveal-up section-a">
+        <h3>Publications</h3>
 
         {media.map((item) => (
           <button
@@ -86,11 +89,11 @@ export function MediaPage() {
         ))}
       </div>
 
-      <article className="media-panel">
+      <article className="media-panel reveal-up section-b">
         {activeMedia ? (
           <>
             <img src={activeMedia.url} alt={activeMedia.title} className="media-preview" />
-            <h3>{activeMedia.title}</h3>
+            <h3 className="media-title">{activeMedia.title}</h3>
             <p>{activeMedia.summary}</p>
           </>
         ) : (
@@ -98,7 +101,7 @@ export function MediaPage() {
         )}
 
         <form className="comment-form" onSubmit={handleSubmit}>
-          <h4>Laisser un commentaire</h4>
+          <h4>Commenter cette publication</h4>
           <input
             type="text"
             placeholder="Nom complet"

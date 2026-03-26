@@ -11,12 +11,19 @@ const links = [
 export function NavBar() {
   return (
     <header className="topbar">
-      <div className="brand-row">
-        <img src="/images/prologo.png" alt="Logo Pro-Informatique" className="brand-logo" />
-        <div>
-          <p className="eyebrow">Entreprise numerique</p>
-          <h1>Pro-Informatique</h1>
+      <div className="topbar-inner">
+        <div className="brand-row">
+          <img src="/images/prologo.png" alt="Logo Pro-Informatique" className="brand-logo" />
+          <div>
+            <p className="eyebrow">Entreprise numerique</p>
+            <h1>Pro-Informatique</h1>
+            <p className="brand-tagline">Cybercafe, bureautique, infographie et assistance tech</p>
+          </div>
         </div>
+
+        <a className="quick-cta" href="/chat">
+          Assistant IA
+        </a>
       </div>
 
       <nav aria-label="Navigation principale" className="main-nav">
