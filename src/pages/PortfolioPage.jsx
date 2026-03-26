@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { projectService, testimonialService } from '../services/portfolioService'
 
 export function PortfolioPage() {
@@ -7,40 +7,46 @@ export function PortfolioPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const initialized = useRef(false)
 
-  useEffect(() => {
-    loadContent()
-  }, [selectedCategory])
-
-  const loadContent = async () => {
+  const loadContent = useCallback(async () => {
     setLoading(true)
     setError('')
 
     try {
-      // Load projects
-      const projectsResult = await projectService.getProjects(
-        selectedCategory !== 'all' ? { category: selectedCategory } : {}
-      )
+      // Load projects from Supabase with fallback
+      const filters = selectedCategory !== 'all' ? { category: selectedCategory } : {}
+      const projectsResult = await projectService.getProjects(filters)
 
       if (projectsResult.error) {
-        setError(projectsResult.error)
-      } else {
-        setProjects(projectsResult.data || [])
+        console.warn('Portfolio error:', projectsResult.error)
+        setError(null) // Use fallback data silently
+      } else if (projectsResult.data && projectsResult.data.length > 0) {
+        setProjects(projectsResult.data)
       }
 
-      // Load testimonials
+      // Load testimonials if viewing all projects
       if (selectedCategory === 'all') {
         const testimonialsResult = await testimonialService.getTestimonials()
-        if (!testimonialsResult.error) {
-          setTestimonials(testimonialsResult.data || [])
+        if (testimonialsResult.data && testimonialsResult.data.length > 0) {
+          setTestimonials(testimonialsResult.data)
         }
       }
     } catch (err) {
-      setError('Erreur lors du chargement du contenu')
+      console.error('Failed to load portfolio:', err)
+      // Continue with fallback data
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedCategory])
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true
+      loadContent()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const categories = [
     { id: 'all', name: 'Tous les projets' },

@@ -7,6 +7,15 @@ const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m
 const ServicesPage = lazy(() =>
   import('./pages/ServicesPage').then((m) => ({ default: m.ServicesPage })),
 )
+const ServicesDetailPage = lazy(() =>
+  import('./pages/ServicesDetailPage').then((m) => ({ default: m.ServicesDetailPage })),
+)
+const AboutPage = lazy(() =>
+  import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+)
+const GalleryPage = lazy(() =>
+  import('./pages/GalleryPage').then((m) => ({ default: m.GalleryPage })),
+)
 const MediaPage = lazy(() => import('./pages/MediaPage').then((m) => ({ default: m.MediaPage })))
 const ChatPage = lazy(() => import('./pages/ChatPage').then((m) => ({ default: m.ChatPage })))
 const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })))
@@ -43,7 +52,10 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:serviceId" element={<ServicesDetailPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/medias" element={<MediaPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/chat" element={<ChatPage />} />

@@ -1,6 +1,9 @@
+import { Link } from 'react-router-dom'
 import { services } from '../data/company'
 
 export function ServicesPage() {
+  const serviceIds = ['cybercafe', 'bureautique', 'infographie', 'support']
+
   return (
     <section className="services-v2">
       <div className="section-head reveal-up section-a services-intro">
@@ -13,19 +16,22 @@ export function ServicesPage() {
       </div>
 
       <div className="services-grid">
-        {services.map((service, index) => (
-          <article
-            key={service.id}
-            className={`service-card reveal-up section-${String.fromCharCode(98 + (index % 4))}`}
-          >
-            <p className="service-index">0{index + 1}</p>
-            <h3 className="service-title">{service.title}</h3>
-            <p>{service.details}</p>
-            <a href="/chat" className="service-link">
-              Demander un accompagnement
-            </a>
-          </article>
-        ))}
+        {services.map((service, index) => {
+          const serviceId = serviceIds[index % serviceIds.length]
+          return (
+            <article
+              key={service.id}
+              className={`service-card reveal-up section-${String.fromCharCode(98 + (index % 4))}`}
+            >
+              <p className="service-index">0{index + 1}</p>
+              <h3 className="service-title">{service.title}</h3>
+              <p>{service.details}</p>
+              <Link to={`/services/${serviceId}`} className="service-link">
+                Découvrir ce service
+              </Link>
+            </article>
+          )
+        })}
       </div>
 
       <article className="cta-band reveal-up section-d">
@@ -33,9 +39,9 @@ export function ServicesPage() {
           Besoin d'une intervention ou d'un devis rapide ? Lance la discussion depuis l'assistant IA
           ou passe directement a l'atelier.
         </p>
-        <a className="action-link action-link-primary" href="/chat">
-          Ouvrir l'assistant
-        </a>
+        <Link className="action-link action-link-primary" to="/contact">
+          Demander un devis
+        </Link>
       </article>
     </section>
   )

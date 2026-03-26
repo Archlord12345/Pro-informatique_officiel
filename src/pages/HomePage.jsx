@@ -1,11 +1,35 @@
-import { Suspense, lazy, useState, useEffect } from 'react'
+import { Suspense, lazy, useState, useEffect, useRef } from 'react'
 import { companyProfile, services } from '../data/company'
 import { Link } from 'react-router-dom'
+import { projectService } from '../services/portfolioService'
 
 const HeroScene = lazy(() => import('../components/HeroScene').then((m) => ({ default: m.HeroScene })))
 
 export function HomePage() {
   const [teamCount] = useState(12)
+  const [featuredProjects, setFeaturedProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+  const initialized = useRef(false)
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true
+      loadFeaturedProjects()
+    }
+  }, [])
+
+  async function loadFeaturedProjects() {
+    try {
+      const { data } = await projectService.getFeaturedProjects(3)
+      if (data && data.length > 0) {
+        setFeaturedProjects(data)
+      }
+    } catch (err) {
+      console.error('Failed to load featured projects:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const teamMembers = Array.from({ length: teamCount }, (_, i) => ({
     id: i,
@@ -121,21 +145,46 @@ export function HomePage() {
           </div>
 
           <div className="portfolio-grid-preview">
-            <div className="portfolio-preview-card">
-              <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}></div>
-              <h4>Boutique E-commerce</h4>
-              <p className="portfolio-meta">Design • Développement</p>
-            </div>
-            <div className="portfolio-preview-card">
-              <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}></div>
-              <h4>Application Mobile</h4>
-              <p className="portfolio-meta">Maintenance • Support</p>
-            </div>
-            <div className="portfolio-preview-card">
-              <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}></div>
-              <h4>Campagne Impression</h4>
-              <p className="portfolio-meta">Design • Impression</p>
-            </div>
+            {loading ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                <p>Chargement des projets...</p>
+              </div>
+            ) : (featuredProjects.length > 0 ? (
+              featuredProjects.map((project) => (
+                <div key={project.id} className="portfolio-preview-card">
+                  <div 
+                    className="portfolio-preview-img" 
+                    style={{ 
+                      background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
+                      backgroundImage: project.images?.[0] ? `url(${project.images[0]})` : null,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
+                  ></div>
+                  <h4>{project.title}</h4>
+                  <p className="portfolio-meta">{project.category || 'Projet'} • {project.client || 'Notre équipe'}</p>
+                </div>
+              ))
+            ) : (
+              // Fallback avec projets de démo
+              <>
+                <div className="portfolio-preview-card">
+                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}></div>
+                  <h4>Boutique E-commerce</h4>
+                  <p className="portfolio-meta">Design • Développement</p>
+                </div>
+                <div className="portfolio-preview-card">
+                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}></div>
+                  <h4>Application Mobile</h4>
+                  <p className="portfolio-meta">Maintenance • Support</p>
+                </div>
+                <div className="portfolio-preview-card">
+                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}></div>
+                  <h4>Campagne Impression</h4>
+                  <p className="portfolio-meta">Design • Impression</p>
+                </div>
+              </>
+            ))}
           </div>
 
           <div className="preview-footer">

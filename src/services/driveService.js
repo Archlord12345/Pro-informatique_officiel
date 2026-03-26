@@ -1,7 +1,10 @@
 /**
  * Google Drive Integration Service
  * Handles file uploads, downloads, and sharing with Google Drive
+ * 
+ * @note gapi is loaded dynamically from Google API client library
  */
+/* eslint-disable no-undef */
 
 const GOOGLE_DRIVE_CLIENT_ID = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID || ''
 const GOOGLE_DRIVE_API_KEY = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY || ''
@@ -95,7 +98,7 @@ export const driveService = {
   /**
    * Upload file to Google Drive
    */
-  async uploadFile(file, parentFolderId = null, mimeType = null) {
+  async uploadFile(file, parentFolderId = null) {
     if (!this.isConfigured()) {
       return { data: null, error: 'Google Drive not configured' }
     }

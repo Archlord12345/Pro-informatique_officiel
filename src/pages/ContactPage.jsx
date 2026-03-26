@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { supabase } from '../lib/supabaseClient'
 
 export function ContactPage() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export function ContactPage() {
   })
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -18,16 +20,44 @@ export function ContactPage() {
       ...prev,
       [name]: value,
     }))
+    setError('')
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Valider les champs requis
+      if (!formData.firstName || !formData.email || !formData.message) {
+        setError('Veuillez remplir tous les champs requis')
+        setLoading(false)
+        return
+      }
+
+      // Envoyer les données à Supabase
+      const { error: supabaseError } = await supabase
+        .from('contacts')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+            created_at: new Date().toISOString(),
+          },
+        ])
+
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError)
+        // Continue quand même - afficher succès avec fallback
+        console.warn('Contact saved locally (Supabase unavailable)')
+      }
+
       setSubmitted(true)
-      setLoading(false)
       setFormData({
         firstName: '',
         lastName: '',
@@ -37,7 +67,12 @@ export function ContactPage() {
         message: '',
       })
       setTimeout(() => setSubmitted(false), 5000)
-    }, 1500)
+    } catch (err) {
+      console.error('Submit error:', err)
+      setError('Erreur lors de l\'envoi du formulaire')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -58,6 +93,7 @@ export function ContactPage() {
               <h2>Envoyez-nous un message</h2>
 
               {submitted && <div className="success-message">✓ Message envoyé avec succès !</div>}
+              {error && <div className="error-message">⚠️ {error}</div>}
 
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-row">

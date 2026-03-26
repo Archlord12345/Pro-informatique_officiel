@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { projectService } from '../services/portfolioService'
 
 export function DashboardPage() {
@@ -10,25 +10,52 @@ export function DashboardPage() {
     revenue: 0,
   })
   const [loading, setLoading] = useState(true)
+  const initialized = useRef(false)
 
-  useEffect(() => {
-    loadDashboard()
+  const loadDashboard = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { data } = await projectService.getProjects()
+      setProjects(data || [])
+
+      // Calculer des statistiques réelles
+      const currentMonth = new Date().getMonth()
+      const currentYear = new Date().getFullYear()
+
+      const completedThisMonth = (data || []).filter((project) => {
+        if (project.completed_at) {
+          const completed = new Date(project.completed_at)
+          return completed.getMonth() === currentMonth && completed.getFullYear() === currentYear
+        }
+        return false
+      }).length
+
+      setStats({
+        totalProjects: data?.length || 0,
+        completedThisMonth: completedThisMonth,
+        activeClients: Math.min((data?.length || 0), 12), // Estimation basée sur les projets
+        revenue: (data?.length || 0) * 50000, // Estimation: ~50K FCFA par projet
+      })
+    } catch (err) {
+      console.error('Error loading dashboard:', err)
+      setStats({
+        totalProjects: 0,
+        completedThisMonth: 0,
+        activeClients: 0,
+        revenue: 0,
+      })
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  const loadDashboard = async () => {
-    setLoading(true)
-    const { data } = await projectService.getProjects()
-    setProjects(data || [])
-
-    // Mock stats
-    setStats({
-      totalProjects: data?.length || 12,
-      completedThisMonth: Math.floor((data?.length || 12) * 0.4),
-      activeClients: 8,
-      revenue: 450000,
-    })
-    setLoading(false)
-  }
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true
+      loadDashboard()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const quickStats = [
     {

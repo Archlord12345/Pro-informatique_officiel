@@ -1,42 +1,74 @@
-import { NavLink } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { NavLink, Link } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'Accueil' },
   { to: '/services', label: 'Services' },
-  { to: '/medias', label: 'Medias' },
-  { to: '/chat', label: 'Assistant IA' },
-  { to: '/admin', label: 'Admin' },
+  { to: '/portfolio', label: 'Portfolio' },
+  { to: '/about', label: 'À Propos' },
+  { to: '/contact', label: 'Contact' },
 ]
 
 export function NavBar() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    // Close mobile menu on route change
+    setIsOpen(false)
+  }, [])
+
   return (
-    <header className="topbar">
-      <div className="topbar-inner">
-        <div className="brand-row">
-          <img src="/images/prologo.png" alt="Logo Pro-Informatique" className="brand-logo" />
-          <div>
-            <p className="eyebrow">Entreprise numerique</p>
-            <h1>Pro-Informatique</h1>
-            <p className="brand-tagline">Cybercafe, bureautique, infographie et assistance tech</p>
-          </div>
-        </div>
+    <>
+      <header className="navbar">
+        <div className="navbar-container">
+          <Link to="/" className="navbar-logo">
+            <span className="logo-icon">💼</span>
+            <span className="logo-text">Pro-Informatique</span>
+          </Link>
 
-        <a className="quick-cta" href="/chat">
-          Assistant IA
-        </a>
-      </div>
-
-      <nav aria-label="Navigation principale" className="main-nav">
-        {links.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) => (isActive ? 'nav-pill active' : 'nav-pill')}
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
           >
-            {link.label}
-          </NavLink>
-        ))}
-      </nav>
-    </header>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <nav className={`navbar-menu ${isOpen ? 'active' : ''}`}>
+            <div className="navbar-links">
+              {links.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="navbar-actions">
+              <NavLink
+                to="/login"
+                className={({ isActive }) => `navbar-link-secondary ${isActive ? 'active' : ''}`}
+                onClick={() => setIsOpen(false)}
+              >
+                Connexion
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className="navbar-cta"
+                onClick={() => setIsOpen(false)}
+              >
+                Devis Gratuit
+              </NavLink>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </>
   )
 }
