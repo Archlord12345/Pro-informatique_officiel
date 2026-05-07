@@ -3,10 +3,37 @@ import { companyProfile, services } from '../data/company'
 import { Link } from 'react-router-dom'
 import { projectService } from '../services/portfolioService'
 
-const HeroScene = lazy(() => import('../components/HeroScene').then((m) => ({ default: m.HeroScene })))
+const HeroScene = lazy(() =>
+  import('../components/HeroScene').then((m) => ({ default: m.HeroScene })),
+)
+
+const SERVICE_ICONS = ['🎨', '🖨️', '🔖', '🔧']
+
+const TESTIMONIALS = [
+  {
+    id: 1,
+    text: 'Service rapide et de très bonne qualité. Mon identité visuelle a été créée en 48h. Je recommande !',
+    name: 'Armel K.',
+    role: 'Entrepreneur, Bafoussam',
+    avatar: '👨‍💼',
+  },
+  {
+    id: 2,
+    text: 'Excellente équipe, très réactive. Nos bannières ont été imprimées parfaitement pour notre événement.',
+    name: 'Fatima N.',
+    role: 'Directrice marketing',
+    avatar: '👩‍💼',
+  },
+  {
+    id: 3,
+    text: 'Mon ordinateur réparé en moins d\'une journée. Tarifs honnêtes et travail soigné. Merci Pro-Informatique !',
+    name: 'Patrick D.',
+    role: 'Ingénieur indépendant',
+    avatar: '🧑‍💻',
+  },
+]
 
 export function HomePage() {
-  const [teamCount] = useState(12)
   const [featuredProjects, setFeaturedProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const initialized = useRef(false)
@@ -14,94 +41,69 @@ export function HomePage() {
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true
-      loadFeaturedProjects()
+      projectService
+        .getFeaturedProjects(3)
+        .then(({ data }) => { if (data?.length) setFeaturedProjects(data) })
+        .catch(() => {})
+        .finally(() => setLoading(false))
     }
   }, [])
 
-  async function loadFeaturedProjects() {
-    try {
-      const { data } = await projectService.getFeaturedProjects(3)
-      if (data && data.length > 0) {
-        setFeaturedProjects(data)
-      }
-    } catch (err) {
-      console.error('Failed to load featured projects:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const teamMembers = Array.from({ length: teamCount }, (_, i) => ({
-    id: i,
-    emoji: ['👨‍💼', '👩‍💼', '👨‍💻', '👩‍💻', '👨‍🎨', '👩‍🎨'][i % 6],
-  }))
+  const orbiterIcons = ['🖨️', '🎨', '🔧', '💻', '📱', '⚙️']
 
   return (
     <>
-      {/* HERO SECTION */}
+      {/* ── HERO ────────────────────────────────────────────── */}
       <section className="modern-hero">
-        <div className="hero-gradient-bg"></div>
-        
+        <div className="hero-gradient-bg" />
         <div className="hero-content-wrapper">
-          <div className="hero-left">
-            <p className="hero-eyebrow">Expertise digitale locale</p>
+          <div className="hero-left reveal-up section-a">
+            <p className="hero-eyebrow">🚀 Expertise digitale locale · Bafoussam</p>
             <h1 className="hero-main-title">
-              Des solutions professionnelles que vous pensiez inaccessibles<br/>
-              <span className="gradient-text">Now Just One Click Away!</span>
+              Des solutions pro<br />
+              <span className="gradient-text">enfin accessibles.</span>
             </h1>
             <p className="hero-description">
-              {companyProfile.description}
+              Pro-Informatique est votre partenaire digital de confiance à Bafoussam.
+              Cybercafé, infographie, impression grand format, réparation — tout en un.
             </p>
-            
             <div className="hero-cta-group">
-              <Link to="/services" className="cta-primary">
-                Démarrer maintenant
-              </Link>
-              <Link to="/contact" className="cta-secondary">
-                Nous contacter
-              </Link>
+              <Link to="/services" className="cta-primary">Découvrir nos services</Link>
+              <Link to="/contact" className="cta-secondary">Devis gratuit →</Link>
             </div>
-
             <div className="hero-stats-mini">
+              <div className="stat-mini">
+                <span className="stat-number">15+</span>
+                <span className="stat-text">Ans d'expertise</span>
+              </div>
+              <div className="stat-mini">
+                <span className="stat-number">+150</span>
+                <span className="stat-text">Clients satisfaits</span>
+              </div>
               <div className="stat-mini">
                 <span className="stat-number">24h</span>
                 <span className="stat-text">Réactivité</span>
               </div>
-              <div className="stat-mini">
-                <span className="stat-number">360°</span>
-                <span className="stat-text">Services</span>
-              </div>
-              <div className="stat-mini">
-                <span className="stat-number">Local</span>
-                <span className="stat-text">Bafoussam</span>
-              </div>
             </div>
           </div>
 
-          <div className="hero-right">
+          <div className="hero-right reveal-up section-b">
             <div className="orbital-container">
               <div className="specialist-circle">
                 <div className="circle-inner">
-                  <p className="circle-stat">12+</p>
-                  <p className="circle-label">Experts</p>
+                  <p className="circle-stat">Pro</p>
+                  <p className="circle-label">Informatique</p>
                 </div>
               </div>
-              
-              <div className="orbital-ring orbital-ring-1"></div>
-              <div className="orbital-ring orbital-ring-2"></div>
-              
-              {teamMembers.map((member, index) => (
+              <div className="orbital-ring orbital-ring-1" />
+              <div className="orbital-ring orbital-ring-2" />
+              {orbiterIcons.map((icon, i) => (
                 <div
-                  key={member.id}
+                  key={i}
                   className="team-avatar"
-                  style={{
-                    '--index': index,
-                    '--total': teamMembers.length,
-                  }}
+                  style={{ '--index': i, '--total': orbiterIcons.length }}
                 >
-                  <div className="avatar-inner">
-                    {member.emoji}
-                  </div>
+                  <div className="avatar-inner">{icon}</div>
                 </div>
               ))}
             </div>
@@ -109,120 +111,151 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES PREVIEW SECTION */}
+      {/* ── SERVICES PREVIEW ────────────────────────────────── */}
       <section className="services-preview-section">
         <div className="preview-container">
-          <div className="preview-header">
+          <div className="preview-header reveal-up section-a">
+            <p className="eyebrow" style={{ marginBottom: '0.75rem' }}>Ce que nous faisons</p>
             <h2>Nos services clés</h2>
             <p>Une couverture complète de vos besoins digitaux</p>
           </div>
-
           <div className="services-grid-preview">
-            {services.slice(0, 3).map((service, idx) => (
-              <div key={service.id} className="service-preview-card">
-                <div className="service-icon">{['🎨', '🖨️', '⚙️'][idx]}</div>
+            {services.map((service, idx) => (
+              <div key={service.id} className={`service-preview-card reveal-up section-${String.fromCharCode(97 + idx)}`}>
+                <div className="service-icon">{SERVICE_ICONS[idx] || '⚡'}</div>
                 <h3>{service.title}</h3>
                 <p>{service.details}</p>
-                <div className="card-highlight"></div>
+                <div className="card-highlight" />
               </div>
             ))}
           </div>
-
           <div className="preview-footer">
-            <Link to="/services" className="link-more">
-              Voir tous les services →
-            </Link>
+            <Link to="/services" className="link-more">Voir tous les services →</Link>
           </div>
         </div>
       </section>
 
-      {/* PORTFOLIO PREVIEW SECTION */}
+      {/* ── STATS BAND ──────────────────────────────────────── */}
+      <section className="stats-band">
+        <div className="stats-band-grid">
+          {[
+            { n: '15+', l: 'Années d\'expérience' },
+            { n: '250+', l: 'Projets réalisés' },
+            { n: '150+', l: 'Clients satisfaits' },
+            { n: '24h', l: 'Délai de réponse' },
+          ].map((s) => (
+            <div key={s.l} className="stats-band-item">
+              <div className="stats-band-number">{s.n}</div>
+              <div className="stats-band-label">{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── PORTFOLIO PREVIEW ───────────────────────────────── */}
       <section className="portfolio-preview-section">
         <div className="preview-container">
-          <div className="preview-header">
-            <h2>Projets réalisés</h2>
-            <p>Des réalisations concrètes pour des clients variés</p>
+          <div className="preview-header reveal-up section-a">
+            <p className="eyebrow" style={{ marginBottom: '0.75rem' }}>Nos réalisations</p>
+            <h2>Projets récents</h2>
+            <p>Des créations concrètes pour des clients variés</p>
           </div>
-
           <div className="portfolio-grid-preview">
             {loading ? (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
-                <p>Chargement des projets...</p>
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                Chargement…
               </div>
-            ) : (featuredProjects.length > 0 ? (
-              featuredProjects.map((project) => (
-                <div key={project.id} className="portfolio-preview-card">
-                  <div 
-                    className="portfolio-preview-img" 
-                    style={{ 
-                      background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
-                      backgroundImage: project.images?.[0] ? `url(${project.images[0]})` : null,
+            ) : featuredProjects.length > 0 ? (
+              featuredProjects.map((p) => (
+                <div key={p.id} className="portfolio-preview-card">
+                  <div
+                    className="portfolio-preview-img"
+                    style={{
+                      background: 'linear-gradient(135deg,#1b238f,#11a9e2)',
+                      backgroundImage: p.images?.[0] ? `url(${p.images[0]})` : undefined,
                       backgroundSize: 'cover',
-                      backgroundPosition: 'center'
+                      backgroundPosition: 'center',
                     }}
-                  ></div>
-                  <h4>{project.title}</h4>
-                  <p className="portfolio-meta">{project.category || 'Projet'} • {project.client || 'Notre équipe'}</p>
+                  />
+                  <h4>{p.title}</h4>
+                  <p className="portfolio-meta">{p.category || 'Projet'} · {p.client || 'Notre équipe'}</p>
                 </div>
               ))
             ) : (
-              // Fallback avec projets de démo
-              <>
-                <div className="portfolio-preview-card">
-                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}></div>
-                  <h4>Boutique E-commerce</h4>
-                  <p className="portfolio-meta">Design • Développement</p>
+              [
+                { title: 'Identité visuelle PME', meta: 'Design · Impression', bg: 'linear-gradient(135deg,#1b238f 0%,#11a9e2 100%)' },
+                { title: 'Campagne banderoles', meta: 'Impression grand format', bg: 'linear-gradient(135deg,#04703e 0%,#11a9e2 100%)' },
+                { title: 'Réparation réseau LAN', meta: 'Support technique', bg: 'linear-gradient(135deg,#ea0f8f 0%,#f4b400 100%)' },
+              ].map((p) => (
+                <div key={p.title} className="portfolio-preview-card">
+                  <div className="portfolio-preview-img" style={{ background: p.bg }} />
+                  <h4>{p.title}</h4>
+                  <p className="portfolio-meta">{p.meta}</p>
                 </div>
-                <div className="portfolio-preview-card">
-                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}></div>
-                  <h4>Application Mobile</h4>
-                  <p className="portfolio-meta">Maintenance • Support</p>
+              ))
+            )}
+          </div>
+          <div className="preview-footer">
+            <Link to="/portfolio" className="link-more">Découvrir le portfolio →</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ────────────────────────────────────── */}
+      <section className="trust-section">
+        <div className="trust-grid">
+          <div className="trust-header reveal-up section-a">
+            <p className="eyebrow" style={{ marginBottom: '0.75rem' }}>Ils nous font confiance</p>
+            <h2>Ce que disent nos clients</h2>
+            <p>Retours authentiques de nos partenaires locaux</p>
+          </div>
+          <div className="testimonials-grid">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.id} className="testimonial-card">
+                <div className="testimonial-quote">"</div>
+                <p className="testimonial-text">{t.text}</p>
+                <div className="testimonial-author">
+                  <div className="author-avatar">{t.avatar}</div>
+                  <div>
+                    <p className="author-name">{t.name}</p>
+                    <p className="author-role">{t.role}</p>
+                  </div>
+                  <div className="stars" style={{ marginLeft: 'auto' }}>★★★★★</div>
                 </div>
-                <div className="portfolio-preview-card">
-                  <div className="portfolio-preview-img" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}></div>
-                  <h4>Campagne Impression</h4>
-                  <p className="portfolio-meta">Design • Impression</p>
-                </div>
-              </>
+              </div>
             ))}
           </div>
-
-          <div className="preview-footer">
-            <Link to="/portfolio" className="link-more">
-              Découvrir notre portfolio →
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* CTA FINAL SECTION */}
-      <section className="final-cta-section">
-        <div className="cta-content">
-          <h2>Prêt à transformer votre vision en réalité?</h2>
-          <p>Nos experts sont disponibles pour discuter de votre projet</p>
-          <Link to="/contact" className="cta-large">
-            Commencer une discussion
-          </Link>
-        </div>
-      </section>
-
-      {/* 3D SCENE (kept for reference) */}
-      <article className="scene-panel reveal-up section-b" style={{ opacity: 0.5, marginTop: '3rem' }}>
+      {/* ── 3D SCENE ────────────────────────────────────────── */}
+      <div className="scene-panel reveal-up section-b">
         <div className="section-head scene-head">
-          <p className="eyebrow">Experience 3D</p>
-          <h3>Ambiance tech immersive</h3>
+          <p className="eyebrow" style={{ alignSelf: 'center' }}>Experience 3D</p>
+          <h3 style={{ textAlign: 'center', fontSize: '1.5rem', marginTop: '0.5rem' }}>
+            Ambiance tech immersive
+          </h3>
         </div>
-
         <Suspense
           fallback={
             <div className="hero-scene hero-skeleton">
-              <p>Chargement de la scene 3D...</p>
+              <p>Chargement de la scène 3D…</p>
             </div>
           }
         >
           <HeroScene />
         </Suspense>
-      </article>
+      </div>
+
+      {/* ── FINAL CTA ───────────────────────────────────────── */}
+      <section className="final-cta-section">
+        <div className="cta-content">
+          <p className="eyebrow">Prêt à démarrer ?</p>
+          <h2>Transformons votre vision <span className="gradient-text">en réalité.</span></h2>
+          <p>Nos experts sont disponibles pour discuter de votre projet dès aujourd'hui.</p>
+          <Link to="/contact" className="cta-large">Commencer une discussion →</Link>
+        </div>
+      </section>
     </>
   )
 }
